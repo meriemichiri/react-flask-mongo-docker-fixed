@@ -11,7 +11,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/meriemichiri/react-flask-mongo-docker.git'
+                    url: 'https://github.com/meriemichiri/react-flask-mongo-docker-fixed.git'
             }
         }
 
