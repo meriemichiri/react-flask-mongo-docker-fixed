@@ -11,3 +11,4 @@ aaatest bul auto !!
 Manually clone the repo and then run `npm install`.
 TEST BUILD AUTO
 TEST BUILD AUTOO
+ TEST BUILD AUTO
