@@ -7,5 +7,5 @@
 
 ## Setup
 
-test bul auto
+aaatest bul auto !!
 Manually clone the repo and then run `npm install`.

@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_BUILDKIT = '0'           // Désactive BuildKit
+        COMPOSE_DOCKER_CLI_BUILD = '0'
+    }
+
     stages {
 
         stage('Clone Repository') {
@@ -10,9 +15,24 @@ pipeline {
             }
         }
 
-        stage('Build Docker Images') {
+        stage('Docker Cleanup') {
             steps {
-                sh 'docker-compose build'
+                sh '''
+                docker-compose down -v || true
+                docker system prune -af || true
+                '''
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                sh 'docker-compose build --no-cache backend'
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                sh 'docker-compose build --no-cache frontend'
             }
         }
 
@@ -20,13 +40,19 @@ pipeline {
             steps {
                 sh '''
                 docker-compose up -d
-                sleep 15
                 docker-compose ps
+                echo "Backend logs:"
+                docker logs backend || true
+                echo "Frontend logs:"
+                docker logs frontend || true
                 '''
             }
         }
 
         stage('Push Images to Docker Hub') {
+            when {
+                branch 'main'   // Push uniquement depuis la branche main
+            }
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-creds',
